@@ -77,7 +77,7 @@ def profile():
             return 'Unauthorized', 401
 
 
-@app.route('/boards', methods='GET')
+@app.route('/boards', methods=['GET'])
 def available_boards():
     key = request.args.get('key')
     user = Users.query.filter(Users.key == key).first
@@ -160,7 +160,7 @@ def add_member(board_id):
         return 'Access denied', 401
 
 
-@app.route('/board/<board_id>/cards', method='POST')
+@app.route('/board/<board_id>/cards', methods=['POST'])
 def add_card(board_id):
     key = request.args.get('key')
     user = Users.query.filter(Users.key == key).first()
