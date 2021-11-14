@@ -83,7 +83,7 @@ def available_boards():
     user = Users.query.filter(Users.key == key).first()
     if user:
         if request.method == 'GET':
-            return [board for board in Boards.query.all() if user.id in board.members]
+            return json.dumps([board for board in Boards.query.all() if user.id in board.members])
         else:
             return 'Bad request method', 405
     else:
