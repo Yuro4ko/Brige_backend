@@ -7,10 +7,6 @@ from app import app, db
 from flask import request
 from models import Users, Boards
 
-@app.route('/')
-def status():
-    return 'OK',200
-
 
 @app.route('/auth/login', methods=['GET'])
 def auth_login(**args):
