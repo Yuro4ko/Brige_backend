@@ -4,7 +4,7 @@
 import random
 import string
 
-from app import db
+from src import db
 
 
 class Users(db.Model):

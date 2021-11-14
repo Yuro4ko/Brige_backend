@@ -3,7 +3,7 @@
 
 import json
 from json import dumps as collect, loads as parse
-from app import app, db
+from src import app, db
 from flask import request
 from models import Users, Boards
 
