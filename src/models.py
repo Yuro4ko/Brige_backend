@@ -45,6 +45,12 @@ class Boards(db.Model):
     members = db.Column(db.JSON, default=lambda: [])
     cards = db.Column(db.JSON, default=lambda: [])
 
+    def update(self, **data):
+        if 'name' in data and data.get('name') is not None:
+            self.name = data.get('name')
+            print(self.name, self.object())
+            db.session.commit()
+
     def object(self):
         return {
             "id": self.id,
