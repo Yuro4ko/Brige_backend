@@ -83,7 +83,7 @@ def available_boards():
     user = Users.query.filter(Users.key == key).first()
     if user:
         if request.method == 'GET':
-            return json.dumps([board for board in Boards.query.all() if user.id in board.members])
+            return json.dumps([board.object() for board in Boards.query.all() if user.id in board.members])
         else:
             return 'Bad request method', 405
     else:
@@ -92,12 +92,12 @@ def available_boards():
 
 @app.route('/board', methods=['POST'])
 def create_board(): # -> str | tuple:
-    key = request.args.get('key')
+    key = request.json.get('key')
     user = Users.query.filter(Users.key == key).first()
     if user:
         if request.method == 'POST':
-            name = request.args.get('name')
-            board = Boards(name=name)
+            name = request.json.get('name')
+            board = Boards(name=name, members=[user.id])
             db.session.add(board)
             db.session.commit()
             return json.dumps(board.object())
