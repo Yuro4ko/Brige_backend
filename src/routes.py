@@ -5,7 +5,7 @@ import json
 from json import dumps as collect, loads as parse
 from src import app, db
 from flask import request
-from models import Users, Boards
+from src.models import Users, Boards
 
 
 @app.route('/auth/login', methods=['GET'])
