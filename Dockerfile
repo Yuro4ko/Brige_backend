@@ -7,8 +7,7 @@ COPY . /web/
 WORKDIR /web
 
 RUN pip install --upgrade pip
-RUN pip install flask
-RUN pip install flask_sqlalchemy
+RUN pip install flask flask_sqlalchemy flask_cors
 
 ENTRYPOINT ["python", "app.py"]
 CMD ["runserver", "0.0.0.0:8000"]

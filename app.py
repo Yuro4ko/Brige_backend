@@ -6,12 +6,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}/{}'.format(
-    os.getenv('DB_USER', 'root'),
-    os.getenv('DB_PASSWORD', 'futuba14'),
-    os.getenv('DB_HOST', '185.43.7.25'),
-    os.getenv('DB_NAME', 'dataterminal')
-)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///brige.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
