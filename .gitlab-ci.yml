@@ -17,5 +17,6 @@ deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   script:
     - echo "Deploying application..."
+    - docker rm -f server
     - docker run -d --name=server -p 5000:5000 api
     - echo "Application successfully deployed."
