@@ -80,7 +80,7 @@ def profile():
 @app.route('/boards', methods=['GET'])
 def available_boards():
     key = request.args.get('key')
-    user = Users.query.filter(Users.key == key).first
+    user = Users.query.filter(Users.key == key).first()
     if user:
         if request.method == 'GET':
             return [board for board in Boards.query.all() if user.id in board.members]
