@@ -119,7 +119,7 @@ def board(board_id): # -> str | tuple:
         return 'Access denied', 401
 
 
-@app.route('board/<board_id>/members', methods=['PUT', 'DELETE'])
+@app.route('/board/<board_id>/members', methods=['PUT', 'DELETE'])
 def add_member(board_id):
     key = request.args.get('key')
     user = Users.query.filter(Users.key == key).first()
