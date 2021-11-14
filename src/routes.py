@@ -77,6 +77,19 @@ def profile():
             return 'Unauthorized', 401
 
 
+@app.route('/boards', methods='GET')
+def available_boards():
+    key = request.args.get('key')
+    user = Users.query.filter(Users.key == key).first
+    if user:
+        if request.method == 'GET':
+            return [board for board in Boards.query.all() if user.id in board.members]
+        else:
+            return 'Bad request method', 405
+    else:
+        return 'Access denied', 401
+
+
 @app.route('/board', methods=['POST'])
 def create_board(): # -> str | tuple:
     key = request.args.get('key')
@@ -84,10 +97,10 @@ def create_board(): # -> str | tuple:
     if user:
         if request.method == 'POST':
             name = request.args.get('name')
-            _board = Boards(name=name)
-            db.session.add(_board)
+            board = Boards(name=name)
+            db.session.add(board)
             db.session.commit()
-            return json.dumps(_board.object())
+            return json.dumps(board.object())
         else:
             return 'Bad request method', 405
     else:
@@ -95,22 +108,22 @@ def create_board(): # -> str | tuple:
 
 
 @app.route('/board/<board_id>', methods=['GET', 'PATCH'])
-def board(board_id): # -> str | tuple:
+def board_by_id(board_id): # -> str | tuple:
     key = request.args.get('key')
     user = Users.query.filter(Users.key == key).first()
 
     if user:
         if request.method == 'GET':
-            _board = Boards.query.filter_by(id=board_id).first()
-            if not _board:
+            board = Boards.query.filter_by(id=board_id).first()
+            if not board:
                 return 'Board access denied', 403
-            return json.dumps(_board.object())
+            return json.dumps(board.object())
         elif request.method == 'PATCH':
             name = request.args.get('name')
-            _board = Boards.query.filter_by(id=board_id).first()
-            if _board:
-                _board.update(name=name)
-                return json.dumps(_board.object())
+            board = Boards.query.filter_by(id=board_id).first()
+            if board:
+                board.update(name=name)
+                return json.dumps(board.object())
             else:
                 return 'Board not found', 404
         else:
@@ -127,20 +140,36 @@ def add_member(board_id):
     if user:
         if request.method == 'PUT':
             members = request.args.get('members')
-            _board = Boards.query.filter_by(id=board_id).first()
-            if _board:
-                _board.members = _board.members + members
-                return json.dumps(_board.object())
+            board = Boards.query.filter_by(id=board_id).first()
+            if board:
+                board.members = board.members + members
+                return json.dumps(board.object())
             else:
                 return 'Board not found', 404
         elif request.method == 'DELETE':
             members = request.args.get('members')
-            _board = Boards.query.filter_by(id=board_id).first()
-            if _board:
-                [_board.members.remove(x) for x in members]
-                return json.dumps(_board.object())
+            board = Boards.query.filter_by(id=board_id).first()
+            if board:
+                [board.members.remove(x) for x in members]
+                return json.dumps(board.object())
             else:
                 return 'Board not found', 404
+        else:
+            return 'Bad request method', 405
+    else:
+        return 'Access denied', 401
+
+
+@app.route('/board/<board_id>/cards', method='POST')
+def add_card(board_id):
+    key = request.args.get('key')
+    user = Users.query.filter(Users.key == key).first()
+    if user:
+        if request.method == 'POST':
+            board = request.args.get('board')
+            name = request.args.get('name')
+            description = request.args.get('description')
+            checklist = request.args.get('checklist')
         else:
             return 'Bad request method', 405
     else:
