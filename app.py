@@ -6,9 +6,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///brige.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-with app.app_context():
-    import models
-    import routes
+# with app.app_context():
+#     import models
+#     import routes
 
 
 @app.route('/')
