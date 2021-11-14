@@ -8,6 +8,11 @@ from flask import request
 from src.models import Users, Boards
 
 
+@app.route('/')
+def api_home():
+    return 'OK', 200
+
+
 @app.route('/auth/login', methods=['GET'])
 def auth_login(**args):
     login = request.args.get('login') if request else args.get('login')
