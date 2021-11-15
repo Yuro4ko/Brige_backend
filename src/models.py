@@ -66,6 +66,7 @@ class Boards(db.Model):
 class Cards(db.Model):
     id = db.Column(db.INT, autoincrement=True, primary_key=True)
     board = db.Column(db.INT, db.ForeignKey('boards.id'))
+    index = db.Column(db.INT)
     name = db.Column(db.String(64), unique=False, nullable=True)
     description = db.Column(db.String(2048), unique=False, nullable=True)
     checklist = db.Column(db.JSON, nullable=True, default=lambda: [])

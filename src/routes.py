@@ -5,7 +5,7 @@ import json
 from json import dumps as collect, loads as parse
 from src import app, db
 from flask import request
-from src.models import Users, Boards
+from src.models import Users, Boards, Cards
 
 
 @app.route('/')
@@ -133,7 +133,7 @@ def board_by_id(board_id): # -> str | tuple:
 
 
 @app.route('/board/<board_id>/members', methods=['PUT', 'DELETE'])
-def add_member(board_id):
+def change_board_members(board_id):
     key = request.args.get('key')
     user = Users.query.filter(Users.key == key).first()
 
@@ -166,10 +166,59 @@ def add_card(board_id):
     user = Users.query.filter(Users.key == key).first()
     if user:
         if request.method == 'POST':
-            board = request.args.get('board')
             name = request.args.get('name')
-            description = request.args.get('description')
-            checklist = request.args.get('checklist')
+            card = Cards(name=name, board=board_id)
+            db.session.add(card)
+            db.session.commit()
+            return json.dumps(card.object())
+        else:
+            return 'Bad request method', 405
+    else:
+        return 'Access denied', 401
+
+
+@app.route('/board/<board_id>/cards/<card_id>', methods=['PATCH'])
+def change_card(board_id, card_id):
+    key = request.args.get('key')
+    user = Users.query.filter(Users.key == key).first()
+    if user:
+        if request.method == 'PATCH':
+            card = Cards.query.filter(Cards.id == card_id).first()
+            card.index = request.args.get('index')
+            card.card.name = request.args.get('name')
+            card.description = request.args.get('description')
+            card.checklist = request.args.get('checklist')
+            card.start_date = request.args.get('start_date')
+            card.end_date = request.args.get('end_date')
+            db.session.commit()
+            return json.dumps(card.object())
+        else:
+            return 'Bad request method', 405
+    else:
+        return 'Access denied', 401
+
+
+@app.route('/board/<board_id>/cards/<card_id>/members', methods=['PUT', 'DELETE'])
+def change_card_members(board_id, card_id):
+    key = request.args.get('key')
+    user = Users.query.filter(Users.key == key).first()
+    if user:
+        if request.method == 'PUT':
+            card = Cards.query.filter(Cards.id == card_id).first()
+            members = request.args.get('members')
+            if card:
+                card.members = card.members + members
+                return json.dumps(card.object())
+            else:
+                return 'Card not found', 404
+        elif request.method == 'DELETE':
+            card = Cards.query.filter(Cards.id == card_id).first()
+            members = request.args.get('members')
+            if card:
+                [card.members.remove(x) for x in members]
+                return json.dumps(card.object())
+            else:
+                return 'Card not found', 404
         else:
             return 'Bad request method', 405
     else:
