@@ -162,11 +162,11 @@ def change_board_members(board_id):
 
 @app.route('/board/<board_id>/cards', methods=['POST'])
 def add_card(board_id):
-    key = request.args.get('key')
+    key = request.json().get('key')
     user = Users.query.filter(Users.key == key).first()
     if user:
         if request.method == 'POST':
-            name = request.args.get('name')
+            name = request.json().get('name')
             card = Cards(name=name, board=board_id)
             db.session.add(card)
             db.session.commit()
